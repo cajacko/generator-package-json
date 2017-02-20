@@ -1,8 +1,24 @@
 const Generator = require('yeoman-generator');
 
+function stringToArray(string) {
+  const keywords = [];
+
+  string.split(',').forEach((keyword) => {
+    if (!keyword.length) {
+      return false;
+    }
+
+    return keywords.push(keyword.trim());
+  });
+
+  return keywords;
+}
+
 module.exports = class extends Generator {
-  prompting() {
-    return this.prompt([{
+  constructor(args, opts) {
+    super(args, opts);
+
+    this.questions = [{
       type: 'input',
       name: 'name',
       message: 'name:',
@@ -24,19 +40,7 @@ module.exports = class extends Generator {
       type: 'input',
       name: 'keywords',
       message: 'keywords:',
-      filter(input) {
-        const keywords = [];
-
-        input.split(',').forEach((keyword) => {
-          if (!keyword.length) {
-            return false;
-          }
-
-          return keywords.push(keyword.trim());
-        });
-
-        return keywords;
-      }
+      stringToArray
     }, {
       type: 'input',
       name: 'authorName',
@@ -64,17 +68,41 @@ module.exports = class extends Generator {
       message: 'node engine:',
       default: '>=6.9.1',
       store: true
-    }]).then((answers) => {
-      this.name = answers.name;
-      this.version = answers.version;
-      this.description = answers.description;
-      this.github = answers.github;
-      this.keywords = answers.keywords;
-      this.authorName = answers.authorName;
-      this.authorEmail = answers.authorEmail;
-      this.authorUrl = answers.authorUrl;
-      this.license = answers.license;
-      this.engine = answers.engine;
+    }];
+
+    this.questions.forEach((question) => {
+      let type = String;
+
+      if (question.name === 'keywords') {
+        type = stringToArray;
+      }
+
+      this.option(question.name, {
+        type
+      });
+    });
+
+    this.option('files', {
+      type: stringToArray
+    });
+  }
+
+  prompting() {
+    const questions = [];
+
+    this.questions.forEach((question) => {
+      if (typeof this.options[question.name] === 'undefined') {
+        questions.push(question);
+      } else {
+        this[question.name] = this.options[question.name];
+      }
+    });
+
+    return this.prompt(questions).then((answers) => {
+      Object.keys(answers).map((key) => {
+        this[key] = answers[key];
+        return this[key];
+      });
     });
   }
 
@@ -108,6 +136,10 @@ module.exports = class extends Generator {
         url: `${this.github}/issues`
       }
     };
+
+    if (this.options.files) {
+      this.file.files = this.options.files;
+    }
   }
 
   writing() {
