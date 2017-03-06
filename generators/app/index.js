@@ -27,7 +27,7 @@ module.exports = class extends Generator {
       type: 'input',
       name: 'version',
       message: 'version:',
-      default: '1.0.0'
+      default: '0.0.1'
     }, {
       type: 'input',
       name: 'description',
