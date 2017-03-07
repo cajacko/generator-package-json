@@ -1,6 +1,6 @@
 {
   "name": "generator-package-json",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Yeoman generator for creating a package.json file",
   "author": "Charlie Jackson <contact@charliejackson.com> (https://charliejackson.com)",
   "license": "MIT",
