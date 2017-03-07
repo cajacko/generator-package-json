@@ -126,7 +126,8 @@ module.exports = class extends Generator {
       scripts: {
         'version:patch': 'npm version patch',
         'version:minor': 'npm version minor',
-        'version:major': 'npm version major'
+        'version:major': 'npm version major',
+        publish: 'npm publish'
       },
       engine: {
         node: this.engine
