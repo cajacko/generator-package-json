@@ -127,7 +127,9 @@ module.exports = class extends Generator {
         'version:patch': 'npm version patch',
         'version:minor': 'npm version minor',
         'version:major': 'npm version major',
-        publish: 'npm publish'
+        publish: 'npm publish',
+        precommit: 'npm test',
+        prepush: 'npm test'
       },
       engine: {
         node: this.engine
@@ -145,5 +147,9 @@ module.exports = class extends Generator {
 
   writing() {
     this.fs.writeJSON(this.destinationPath('./package.json'), this.file);
+  }
+
+  installPackages() {
+    this.npmInstall('husky', { 'save-dev': true });
   }
 };
